@@ -196,7 +196,7 @@ decoder和encoder部分都是基于lstm，在decoder后面有一层dense层，�
 
 <div align=center><img src="https://github.com/Nana0606/Lyrics-generation/blob/master/imgs/seq2seq_train_analysis.png" width="60%" alt="基于lstm的概率语言模型训练结果"/></div>
 
-从上图可以看出，训练集的acc还在持续增加，loss持续降低；但是验证集上val-loss在先减小再减小（尽管val-acc一直在增加），这是典型的过拟合（下篇博文会整理出现这个问题的原因），但是我们存储的val-loss最小时的模型，在epoch=15，val-loss≈3.1，val-acc≈0.45。（具体详见原因分析详见博客）
+从上图可以看出，训练集的acc还在持续增加，loss持续降低；但是验证集上val-loss在先减小再减小（尽管val-acc一直在增加），这是典型的过拟合（分析详见博客：https://blog.csdn.net/quiet_girl/article/details/86138489），但是我们存储的val-loss最小时的模型，在epoch=15，val-loss≈3.1，val-acc≈0.45。
 
 （3）结果展示：
 
