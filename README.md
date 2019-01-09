@@ -70,7 +70,7 @@
 - 基于lstm的概率语言模型
 - 基于seq2seq的序列模型
 
-下面大体介绍下两种模型的情况（具体的内容请移步本人博客：https://blog.csdn.net/quiet_girl/article/details/84768821）：
+下面大体介绍下两种模型的情况（具体的内容请移步本人博客：https://blog.csdn.net/quiet_girl/article/details/84768821 ）：
 
 #### 3.1 基于lstm的概率语言模型
 
