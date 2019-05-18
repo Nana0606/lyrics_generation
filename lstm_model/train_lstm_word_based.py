@@ -36,7 +36,7 @@ EMBEDDING_DIM_2 = 1600     # 第二层lstm的输出维度
 BATCH_SIZE = 64    # batch的大小
 EPOCHS = 50    # 迭代次数
 
-def cutWords(file_name):
+def cut_words(file_name):
     """
     功能：将file中的内容返回按“字”分割的列表
     :param file_name: 文件名称
@@ -47,7 +47,7 @@ def cutWords(file_name):
         f.close()
     return list(content)
 
-def mapWords(cut_word_list):
+def map_words(cut_word_list):
     """
     将训练文本中的“字”形成字典：word2index和index2word
     :param cut_word_list:文件内容按“字”分割的列表
@@ -72,7 +72,7 @@ def mapWords(cut_word_list):
     # print("len of index_to_word::", len(index_to_word))
     return word_to_index, index_to_word
 
-def generateTrainData(cut_word_list, word_to_index):
+def generate_train_data(cut_word_list, word_to_index):
     """
     构造训练集，并处理成keras可以接受的输入格式。
     :param cut_word_list: 按“字”分割之后的list
@@ -153,7 +153,7 @@ def model_lstm(X_train, X_val, y_train, y_val, word_to_index):
     model.save('./model_epoch50_2lstm_1dense_seq50_phrase_based_best.h5')
     return history_record
 
-def plotAccuray(history_record):
+def plot_accuray(history_record):
     """
     plot the accuracy and loss line. 若使用tensorboard，则可以不使用
     :param history_record:
@@ -177,11 +177,11 @@ def plotAccuray(history_record):
 
 if __name__ == '__main__':
     file_name = "../train_data/all_5.txt"
-    cut_word_list = cutWords(file_name)
-    word_to_index, index_to_word = mapWords(cut_word_list)
-    X_train, X_val, y_train, y_val = generateTrainData(cut_word_list, word_to_index)
+    cut_word_list = cut_words(file_name)
+    word_to_index, index_to_word = map_words(cut_word_list)
+    X_train, X_val, y_train, y_val = generate_train_data(cut_word_list, word_to_index)
     history_record = model_lstm(X_train, X_val, y_train, y_val, word_to_index)
-    # plotAccuray(history_record)
+    # plot_accuray(history_record)
 
 
 

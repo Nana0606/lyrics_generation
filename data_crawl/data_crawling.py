@@ -16,9 +16,9 @@ import os
 import json
 import re
 
-def getAlbumLinks(url, album_headers, fPath):
+def get_album_links(url, album_headers, f_path):
     """
-    获取专辑名称和专辑id，将其存储到文件中，并调用getLyricsList()函数
+    获取专辑名称和专辑id，将其存储到文件中，并调用get_lyrics_list()函数
     :param html:
     :return:
     """
@@ -30,13 +30,13 @@ def getAlbumLinks(url, album_headers, fPath):
     titles = re.findall(pattern, response_albums.text)
 
     # 判断是否文件已存在，若存在则删除
-    if os.path.exists(fPath + "AlbumInfo.txt"):
-        os.remove(fPath + "AlbumInfo.txt")
-    if os.path.exists(fPath + "Lyrics.txt"):
-        os.remove(fPath + "Lyrics.txt")
+    if os.path.exists(f_path + "AlbumInfo.txt"):
+        os.remove(f_path + "AlbumInfo.txt")
+    if os.path.exists(f_path + "Lyrics.txt"):
+        os.remove(f_path + "Lyrics.txt")
 
     # 获取专辑id并存储数据
-    with open(fPath+"AlbumInfo.txt", 'a', encoding='utf8') as f:
+    with open(f_path+"AlbumInfo.txt", 'a', encoding='utf8') as f:
         for title in titles:
             # 替换掉双引号，避免对正则化解析出现干扰
             title_handle = title.replace('\"', '')
@@ -53,27 +53,27 @@ def getAlbumLinks(url, album_headers, fPath):
     print("专辑爬取成功")
     return album_ids
 
-def getLyricsList(album_ids, lyricsList_url_current, lyricsList_headers, fPath):
+def get_lyrics_list(album_ids, lyrics_list_url_current, lyrics_list_headers, f_path):
     """
     通过专辑的id获取没张专辑的歌曲及歌曲id
     :param album_links: 专辑ids
     :param lyricsList_url_row:
-    :param lyricsList_headers:
+    :param lyrics_list_headers:
     :return:
     """
-    with open(fPath + "lyricsList.txt", 'a', encoding='utf-8') as f:
+    with open(f_path + "lyricsList.txt", 'a', encoding='utf-8') as f:
         for album_id in album_ids:
-            url = lyricsList_url_current + str(album_id)
+            url = lyrics_list_url_current + str(album_id)
             print("url is::", url)
-            response_lyricsList = requests.get(url, headers=lyricsList_headers)
-            html_lyricsList = etree.HTML(response_lyricsList.text)
-            lyric_list = html_lyricsList.xpath('//ul[@class="f-hide"]//a')
+            response_lyrics_list = requests.get(url, headers=lyrics_list_headers)
+            html_lyrics_list = etree.HTML(response_lyrics_list.text)
+            lyric_list = html_lyrics_list.xpath('//ul[@class="f-hide"]//a')
 
             for lyric in lyric_list:
                 html_data = str(lyric.xpath('string(.)'))
                 # 获取歌曲的id
                 pattern = re.compile(r'<a href="/song\?id=(\d+?)">%s</a>' % html_data)
-                items = re.findall(pattern, response_lyricsList.text)
+                items = re.findall(pattern, response_lyrics_list.text)
                 if len(items) == 1:
                     f.write(html_data + "\t" + str(items[0]) + "\n")
                 elif len(items) == 0:
@@ -83,14 +83,14 @@ def getLyricsList(album_ids, lyricsList_url_current, lyricsList_headers, fPath):
                 print("歌曲::%s, 歌曲ID::%s 写入文件成功" % (html_data, items))
     f.close()
 
-def getLyrics(lyrics_headers, fPath):
+def get_lyrics(lyrics_headers, f_path):
     """
     通过歌曲id获取歌词
     :param lyrics_headers: 头文件
     :return:
     """
     # 直接读取所有内容
-    with open(fPath + 'lyricsList.txt', 'r', encoding='utf8') as f:
+    with open(f_path + 'lyricsList.txt', 'r', encoding='utf8') as f:
         list_of_line = f.readlines()
     count = 1
     for elem in list_of_line:
@@ -103,7 +103,7 @@ def getLyrics(lyrics_headers, fPath):
             lyric = json_content['lrc']['lyric']
             pattern = re.compile(r'\[.*\]')
             lrc = str(re.sub(pattern, "", lyric).strip())
-            with open(fPath + "歌曲名-" + song_name + ".txt", 'w', encoding='utf-8') as w:
+            with open(f_path + "歌曲名-" + song_name + ".txt", 'w', encoding='utf-8') as w:
                 w.write(lrc)
                 w.close()
             count += 1
@@ -113,9 +113,9 @@ def getLyrics(lyrics_headers, fPath):
 
 if __name__ == '__main__':
     # 存储路径
-    fPath = "./lyrics_yixun_chen/"
-    if not os.path.exists(fPath):
-        os.mkdir(fPath)
+    f_path = "./lyrics_yixun_chen/"
+    if not os.path.exists(f_path):
+        os.mkdir(f_path)
 
     # 专辑地址和headers
     singer_id = 2116   # 歌手id，可以在网易云音乐网站上搜索自己喜欢歌手的ID
@@ -132,11 +132,11 @@ if __name__ == '__main__':
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36'
     }
     # 获取所有专辑的地址
-    album_ids = getAlbumLinks(album_url, album_headers, fPath)
+    album_ids = get_album_links(album_url, album_headers, f_path)
 
     # 专辑主页，专辑详情页面的headers和专辑list页面的headers一样
-    lyricsList_url_current = "http://music.163.com/album?id="
-    getLyricsList(album_ids, lyricsList_url_current, album_headers, fPath)
+    lyrics_list_url_current = "http://music.163.com/album?id="
+    get_lyrics_list(album_ids, lyrics_list_url_current, album_headers, f_path)
 
     # 获取歌词的API的headers
     lyrics_headers = {
@@ -146,4 +146,4 @@ if __name__ == '__main__':
         'Remote Address': '59.111.160.195:80',
         'Referrer Policy': 'no-referrer-when-downgrade'
     }
-    getLyrics(lyrics_headers, fPath)
+    get_lyrics(lyrics_headers, f_path)

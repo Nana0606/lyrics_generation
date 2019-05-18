@@ -33,7 +33,7 @@ LATENT_DIM = 1000    # encoder产生的语义向量维度
 BATCH_SIZE = 64    # batch大小
 EPOCHS = 10   # 迭代次数
 
-def cutWords(file_name):
+def cut_words(file_name):
     """
     对中文文件进行分词，但是为了方便构造训练集（训练集需要知道哪个是句子的结尾），所以引用了句号。
     :param file_name: 文件内容的路径
@@ -65,7 +65,7 @@ def cutWords(file_name):
         cut_word_list.append(current_song)
     return cut_word_list, word_list
 
-def mapWords(word_list, file_name):
+def map_words(word_list, file_name):
     """
     生成word-to-index和index-to-word
     :return:word_to_index, index_to_word，都是字段格式，分别以字为key，index为value和以index为key，字为value
@@ -88,7 +88,7 @@ def mapWords(word_list, file_name):
         w.close()
     return word_to_index, index_to_word
 
-def generateInputTargetText(cut_word_list):
+def generate_input_target_text(cut_word_list):
     """
     生成对应的训练集X和y，这里X和y都是分词过的词语list
     :param cut_word_list: 存储所有歌词，其每个元素是一个list，存储一首歌（一首歌使用的又是list of list结构，一个list是一句歌词）；
@@ -120,7 +120,7 @@ def generateInputTargetText(cut_word_list):
             max_seq_target = max(max_seq_target, len(["\t"] + cut_word_list[i][j + 1] + ["\n"]))
     return input_texts, target_texts, max_seq_input, max_seq_target, input_words, target_words
 
-def generateTrainData(input_texts, target_texts, word_to_index_input, word_to_index_target, max_seq_input, max_seq_target):
+def generate_train_data(input_texts, target_texts, word_to_index_input, word_to_index_target, max_seq_input, max_seq_target):
     """
     构造训练集，并处理成keras可以接受的输入
     :param input_texts: 数据集X对应的list
@@ -222,7 +222,7 @@ def model_lstm(word_to_index_input, word_to_index_target, encoder_input_data_tra
     model.save('./model_seq2seq_100epoch_final.h5')
     return history_record
 
-def plotAccuray(history_record):
+def plot_accuray(history_record):
     """
     plot the accuracy and loss line. 若使用tensorboard，则可以不使用
     :param history_record:
@@ -246,12 +246,12 @@ def plotAccuray(history_record):
 
 if __name__ == '__main__':
     file_name = "../train_data/all_5.txt"
-    cut_word_list, word_list = cutWords(file_name)
-    input_texts, target_texts, max_seq_input, max_seq_target, input_words, target_words = generateInputTargetText(cut_word_list)
-    word_to_index_input, index_to_word_input = mapWords(input_words, '_input')
-    word_to_index_target, index_to_word_target = mapWords(target_words, '_target')
-    encoder_input_data_train, decoder_input_data_train, decoder_target_data_train, encoder_input_data_val, decoder_input_data_val, decoder_target_data_val = generateTrainData(input_texts, target_texts, word_to_index_input, word_to_index_target, max_seq_input, max_seq_target)
+    cut_word_list, word_list = cut_words(file_name)
+    input_texts, target_texts, max_seq_input, max_seq_target, input_words, target_words = generate_input_target_text(cut_word_list)
+    word_to_index_input, index_to_word_input = map_words(input_words, '_input')
+    word_to_index_target, index_to_word_target = map_words(target_words, '_target')
+    encoder_input_data_train, decoder_input_data_train, decoder_target_data_train, encoder_input_data_val, decoder_input_data_val, decoder_target_data_val = generate_train_data(input_texts, target_texts, word_to_index_input, word_to_index_target, max_seq_input, max_seq_target)
     history_record = model_lstm(word_to_index_input, word_to_index_target, encoder_input_data_train, decoder_input_data_train, decoder_target_data_train, encoder_input_data_val, decoder_input_data_val, decoder_target_data_val)
-    # plotAccuray(history_record)
+    # plot_accuray(history_record)
 
 

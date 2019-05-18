@@ -18,7 +18,7 @@ warnings.filterwarnings("ignore")
 LATENT_DIM = 1000    # encoder结果语义向量的维度，需要和train文件中的配置一样
 
 
-def loadParam(model_file, word2index_input_file, index2word_input_file, word2index_target_file, index2word_target_file):
+def load_param(model_file, word2index_input_file, index2word_input_file, word2index_target_file, index2word_target_file):
     """
     加载模型和参数
     :param model_file: 模型和参数路径
@@ -62,7 +62,7 @@ def loadParam(model_file, word2index_input_file, index2word_input_file, word2ind
     print("index2word is::", index2word_target_new)
     return model, word2index_input, index2word_input_new, word2index_target, index2word_target_new
 
-def getModel(model):
+def get_model(model):
     """
     通过已经加载的模型，获取模型中的encoder和decoder
     :param model: 模型和参数路径
@@ -154,7 +154,7 @@ def decode_sequence(encoder_model, decoder_model, input_seq_rep, word2index_targ
             decoded_sentence_all += decoded_sentence
     return decoded_sentence_all
 
-def getSeqRepresentation(input_seq, word2index_input):
+def get_seq_representation(input_seq, word2index_input):
     """
     生成输入句子的表示
     :param input_seq: 输入的句子
@@ -175,9 +175,9 @@ if __name__ == '__main__':
     index2word_input_file = './index_to_word_seq2seq_input.txt'
     word2index_target_file = './word_to_index_seq2seq_target.txt'
     index2word_target_file = './index_to_word_seq2seq_target.txt'
-    model, word2index_input, index2word_input_new, word2index_target, index2word_target_new = loadParam(model_file, word2index_input_file, index2word_input_file, word2index_target_file, index2word_target_file)
-    encoder_model, decoder_model = getModel(model)
+    model, word2index_input, index2word_input_new, word2index_target, index2word_target_new = load_param(model_file, word2index_input_file, index2word_input_file, word2index_target_file, index2word_target_file)
+    encoder_model, decoder_model = get_model(model)
     input_seq = "喧嚣的人群"
-    input_seq_rep = getSeqRepresentation(input_seq, word2index_input)
+    input_seq_rep = get_seq_representation(input_seq, word2index_input)
     decoded_sentence = decode_sequence(encoder_model, decoder_model, input_seq_rep, word2index_target, index2word_target_new)
     print(decoded_sentence)

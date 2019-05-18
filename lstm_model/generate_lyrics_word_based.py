@@ -11,7 +11,7 @@ from keras.models import load_model
 import numpy as np
 import json
 
-def loadParam(model_file, word2index_file, index2word_file):
+def load_param(model_file, word2index_file, index2word_file):
     """
     load model and word2index_file, index2word_file
     :param model_file:
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     model_file = './model_epoch50_2lstm_1dense_seq10_word_based_best.h5'
     word2index_file = './word_to_index_word.txt'
     index2word_file = './index_to_word_word.txt'
-    model, word2index, index2word = loadParam(model_file, word2index_file, index2word_file)
+    model, word2index, index2word = load_param(model_file, word2index_file, index2word_file)
     start = "痴情"
     generate_maxlen = 200
     SEQ_LENGTH = 10
