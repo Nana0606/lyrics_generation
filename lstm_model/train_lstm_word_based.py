@@ -130,7 +130,7 @@ def model_lstm(X_train, X_val, y_train, y_val, word_to_index):
     model = Model(inputs=x_train_in, outputs=dense)
     print(model.summary())
 
-    adam = Adam(lr=0.001, beta_1=0.9, beta_2=0.99, epsilon=1e-08)
+    adam = Adam(lr=0.0001, beta_1=0.9, beta_2=0.99, epsilon=1e-08)
     model.compile(loss='categorical_crossentropy',
                   optimizer=adam,
                   metrics=['accuracy'])
